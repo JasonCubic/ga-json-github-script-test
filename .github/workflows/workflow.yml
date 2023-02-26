@@ -49,11 +49,13 @@ jobs:
     steps:
       - name: Get GitHub Script result from a different job
         run: echo "${{ needs.test-json.outputs.output1 }}"
+      - name: Get it with pretty-print formatting for the logs
+        run: echo "${{ toJson(fromJson(needs.test-json.outputs.output1)) }}"
       - name: Get name
-        # fromJson changes it from a string to an object (or array)
+        # fromJson changes it from a string to an object (or array) https://docs.github.com/en/enterprise-server@3.5/actions/learn-github-actions/expressions#fromjson
         run: echo "${{ fromJson(needs.test-json.outputs.output1).name }}"
       - name: Get array key as string
-        # toJson turns it back into a string
+        # toJson turns it back into a string https://docs.github.com/en/enterprise-server@3.5/actions/learn-github-actions/expressions#tojson
         run: echo "${{ toJson(fromJson(needs.test-json.outputs.output1).deep.goes) }}"
       - name: Get a deep value
         run: echo "${{ fromJson(needs.test-json.outputs.output1).deep.goes[1].cool }}"
