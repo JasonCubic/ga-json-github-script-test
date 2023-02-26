@@ -31,11 +31,11 @@ jobs:
         with:
           script: |
             core.setOutput('outputKey', {
-              name: "John",
+              name: 'John',
               age: 30,
-              city: "New York",
+              city: 'New York',
               deep: {
-                goes: ["yes", { cool: "it goes deep!"}]
+                goes: ['yes', { cool: 'it goes deep!'}]
               }
             });
       - name: Get GitHub Script result while in the same job
