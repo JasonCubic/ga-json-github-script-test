@@ -1,0 +1,212 @@
+name: test json
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+# use act to run github actions locally
+# https://github.com/nektos/act
+# examples:
+# act -j test-json -P self-hosted=nektos/act-environments-ubuntu:18.04
+# act -j test-json -P self-hosted=catthehacker/ubuntu:act-latest
+# act pull_request -P self-hosted=nektos/act-environments-ubuntu:18.04
+
+jobs:
+  test-json:
+    name: IT Buddy Dev - build and deploy
+    runs-on: [self-hosted, Linux, X64]
+    environment: dev
+
+    steps:
+      - uses: actions/github-script@v6
+        id: set-result
+        with:
+          # github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            return "Hello!"
+          result-encoding: string
+      - name: Get GitHub Scrip result
+        run: echo "${{steps.set-result.outputs.result}}"
+
+      # - name: Set complex object
+      #   run: |
+      #     MY_OBJECT='{"key1": "value1", "key2": ["value2", "value3"], "key3": {"subkey1": "subvalue1", "subkey2": "subvalue2"}}'
+      #     echo $MY_OBJECT
+      #   env:
+      #     MY_OBJECT: ${{ toJSON(fromJSON(env.MY_OBJECT)) }}
+      # - name: Use complex object
+      #   run: |
+      #     echo ${{ fromJSON(env.MY_OBJECT).key1 }}
+      #     echo ${{ fromJSON(env.MY_OBJECT).key2[0] }}
+      #     echo ${{ fromJSON(env.MY_OBJECT).key3.subkey2 }}
+
+      # - name: jq get version
+      #   run: |
+      #     jq --help
+
+      # - name: create json string
+      #   id: my-json-config
+      #   run: |
+      #     MY_JSON=$(cat << EOF
+      #     {
+      #       "name": "John",
+      #       "age": 30,
+      #       "city": "New York"
+      #     }
+      #     EOF
+      #     )
+      #     echo "::set-output name=MY_JSON::$(jq -c $MY_JSON)"
+
+      # - name: echo out json
+      #   run: |
+      #     echo "${{ steps.my-json-config.outputs.MY_JSON }}"
+# act -j test-json -P self-hosted=catthehacker/ubuntu:act-latest
+
+# act pull_request -P self-hosted=nektos/act-environments-ubuntu:18.04
+
+# - uses: actions/checkout@v3
+
+# # https://github.com/docker/setup-buildx-action/issues/112
+# - name: Create BuildKit Configuration
+#   run: |
+#     cat <<EOF > buildkitd.toml
+#     [registry."docker-registry-dtna.app.corpintra.net"]
+#       insecure = true
+#     EOF
+
+# # https://github.com/docker/setup-buildx-action
+# - name: Setup Docker buildx
+#   uses: docker/setup-buildx-action@v2
+#   with:
+#     config: buildkitd.toml
+
+# # https://github.com/docker/login-action
+# - name: Log into docker harbor registry
+#   uses: docker/login-action@v2
+#   with:
+#     registry: docker-registry-dtna.app.corpintra.net
+#     username: DTNA_CVD_s_ITBuddy
+#     password: ${{ secrets.SERVICE_ACCOUNT_PASSWORD }}
+
+# # https://github.com/docker/bake-action
+# - name: Build and push
+#   uses: docker/bake-action@v2
+#   with:
+#     files: docker-compose.dev.yml
+#     workdir: ./docker
+#     no-cache: true
+#     push: true
+#     set: |
+#       admin.args.HTTP_PROXY=${{ secrets.HTTP_PROXY }}
+#       admin.args.HTTPS_PROXY=${{ secrets.HTTPS_PROXY }}
+#       api.args.NODE_ENV=development
+#       api.args.HTTP_PROXY=${{ secrets.HTTP_PROXY }}
+#       api.args.HTTPS_PROXY=${{ secrets.HTTPS_PROXY }}
+#       api.args.MSSQL_PASSWORD=${{ secrets.MSSQL_PASSWORD }}
+#       api.args.MSSQL_SCRM_PASSWORD=${{ secrets.MSSQL_SCRM_PASSWORD }}
+#       api.args.MQTT_USERNAME_DEV=${{ secrets.MQTT_USERNAME }}
+#       api.args.MQTT_PASSWORD_DEV=${{ secrets.MQTT_PASSWORD }}
+#       api.args.MQTT_KEY_ROOT_DEV=${{ secrets.MQTT_KEY_ROOT }}
+#       api.args.MQTT_REQUEST_KEY_ROOT_DEV=${{ secrets.MQTT_REQUEST_KEY_ROOT }}
+#       api.args.MQTT_PROTOCOL_DEV=${{ secrets.MQTT_PROTOCOL }}
+#       api.args.MQTT_VIP_HOST_DEV=${{ secrets.MQTT_VIP_HOST }}
+#       api.args.MQTT_VIP_PORT_DEV=${{ secrets.MQTT_VIP_PORT }}
+#       api.args.MQTT_PASSPHRASE_DEV=${{ secrets.MQTT_PASSPHRASE }}
+#       api.args.SERVICE_ACCOUNT_PASSWORD=${{ secrets.SERVICE_ACCOUNT_PASSWORD }}
+#       api.args.CISM_DTNA_DB_PASSWORD=${{ secrets.CISM_DTNA_DB_PASSWORD }}
+#       api.args.CISM_NAFTA_DB_PASSWORD=${{ secrets.CISM_NAFTA_DB_PASSWORD }}
+#       api.args.CA_FILENAME_DEV=${{ secrets.CA_FILENAME }}
+#       api.args.CA_BASE64_DEV=${{ secrets.CA_BASE64 }}
+#       api.args.MQTT_PFX_FILENAME_DEV=${{ secrets.MQTT_PFX_FILENAME }}
+#       api.args.MQTT_PFX_BASE64_DEV=${{ secrets.MQTT_PFX_BASE64 }}
+#       api.args.AUTHZ_ROLE_MASTERS=${{ secrets.AUTHZ_ROLE_MASTERS }}
+#       scheduler.args.NODE_ENV=development
+#       scheduler.args.HTTP_PROXY=${{ secrets.HTTP_PROXY }}
+#       scheduler.args.HTTPS_PROXY=${{ secrets.HTTPS_PROXY }}
+#       scheduler.args.MSSQL_PASSWORD=${{ secrets.MSSQL_PASSWORD }}
+#       scheduler.args.CA_FILENAME_DEV=${{ secrets.CA_FILENAME }}
+#       scheduler.args.CA_BASE64_DEV=${{ secrets.CA_BASE64 }}
+#       worker-*.args.NODE_ENV=development
+#       worker-*.args.HTTP_PROXY=${{ secrets.HTTP_PROXY }}
+#       worker-*.args.HTTPS_PROXY=${{ secrets.HTTPS_PROXY }}
+#       worker-*.args.MSSQL_PASSWORD=${{ secrets.MSSQL_PASSWORD }}
+#       worker-*.args.MSSQL_SCRM_PASSWORD=${{ secrets.MSSQL_SCRM_PASSWORD }}
+#       worker-*.args.MQTT_USERNAME_DEV=${{ secrets.MQTT_USERNAME }}
+#       worker-*.args.MQTT_PASSWORD_DEV=${{ secrets.MQTT_PASSWORD }}
+#       worker-*.args.MQTT_KEY_ROOT_DEV=${{ secrets.MQTT_KEY_ROOT }}
+#       worker-*.args.MQTT_REQUEST_KEY_ROOT_DEV=${{ secrets.MQTT_REQUEST_KEY_ROOT }}
+#       worker-*.args.MQTT_PROTOCOL_DEV=${{ secrets.MQTT_PROTOCOL }}
+#       worker-*.args.MQTT_VIP_HOST_DEV=${{ secrets.MQTT_VIP_HOST }}
+#       worker-*.args.MQTT_VIP_PORT_DEV=${{ secrets.MQTT_VIP_PORT }}
+#       worker-*.args.MQTT_PASSPHRASE_DEV=${{ secrets.MQTT_PASSPHRASE }}
+#       worker-*.args.MQTT_PFX_FILENAME_DEV=${{ secrets.MQTT_PFX_FILENAME }}
+#       worker-*.args.MQTT_PFX_BASE64_DEV=${{ secrets.MQTT_PFX_BASE64 }}
+#       worker-*.args.SERVICE_ACCOUNT_PASSWORD=${{ secrets.SERVICE_ACCOUNT_PASSWORD }}
+#       worker-*.args.CISM_DTNA_DB_PASSWORD=${{ secrets.CISM_DTNA_DB_PASSWORD }}
+#       worker-*.args.CISM_NAFTA_DB_PASSWORD=${{ secrets.CISM_NAFTA_DB_PASSWORD }}
+#       worker-*.args.CA_FILENAME_DEV=${{ secrets.CA_FILENAME }}
+#       worker-*.args.CA_BASE64_DEV=${{ secrets.CA_BASE64 }}
+
+# # - name: build and push docker compose images
+# #   run: |
+# #     docker compose -f ./docker/docker-compose.dev.yml build --no-cache \
+# #       --build-arg NODE_ENV="development" \
+# #       --build-arg HTTP_PROXY="${{ secrets.HTTP_PROXY }}" \
+# #       --build-arg HTTPS_PROXY="${{ secrets.HTTPS_PROXY }}" \
+# #       --build-arg MSSQL_PASSWORD="${{ secrets.MSSQL_PASSWORD }}" \
+# #       --build-arg MSSQL_SCRM_PASSWORD="${{ secrets.MSSQL_SCRM_PASSWORD }}" \
+# #       --build-arg MQTT_USERNAME_DEV="${{ secrets.MQTT_USERNAME }}" \
+# #       --build-arg MQTT_PASSWORD_DEV="${{ secrets.MQTT_PASSWORD }}" \
+# #       --build-arg MQTT_KEY_ROOT_DEV="${{ secrets.MQTT_KEY_ROOT }}" \
+# #       --build-arg MQTT_REQUEST_KEY_ROOT_DEV="${{ secrets.MQTT_REQUEST_KEY_ROOT }}" \
+# #       --build-arg MQTT_PROTOCOL_DEV="${{ secrets.MQTT_PROTOCOL }}" \
+# #       --build-arg MQTT_VIP_HOST_DEV="${{ secrets.MQTT_VIP_HOST }}" \
+# #       --build-arg MQTT_VIP_PORT_DEV="${{ secrets.MQTT_VIP_PORT }}" \
+# #       --build-arg MQTT_PASSPHRASE_DEV="${{ secrets.MQTT_PASSPHRASE }}" \
+# #       --build-arg MQTT_PFX_FILENAME_DEV="${{ secrets.MQTT_PFX_FILENAME }}" \
+# #       --build-arg MQTT_PFX_BASE64_DEV="${{ secrets.MQTT_PFX_BASE64 }}" \
+# #       --build-arg SERVICE_ACCOUNT_PASSWORD="${{ secrets.SERVICE_ACCOUNT_PASSWORD }}" \
+# #       --build-arg CISM_DTNA_DB_PASSWORD="${{ secrets.CISM_DTNA_DB_PASSWORD }}" \
+# #       --build-arg CISM_NAFTA_DB_PASSWORD="${{ secrets.CISM_NAFTA_DB_PASSWORD }}" \
+# #       --build-arg CA_FILENAME_DEV="${{ secrets.CA_FILENAME }}" \
+# #       --build-arg CA_BASE64_DEV="${{ secrets.CA_BASE64 }}"
+# #     docker push docker-registry-dtna.app.corpintra.net/20027-it-buddy/reverse-proxy:latest-dev
+# #     docker push docker-registry-dtna.app.corpintra.net/20027-it-buddy/admin:latest-dev
+# #     docker push docker-registry-dtna.app.corpintra.net/20027-it-buddy/api:latest-dev
+# #     docker push docker-registry-dtna.app.corpintra.net/20027-it-buddy/tech-stop-survey:latest-dev
+# #     docker push docker-registry-dtna.app.corpintra.net/20027-it-buddy/task-scheduler:latest-dev
+# #     docker push docker-registry-dtna.app.corpintra.net/20027-it-buddy/worker-a:latest-dev
+# #     docker push docker-registry-dtna.app.corpintra.net/20027-it-buddy/worker-b:latest-dev
+# #     docker compose -f ./docker/docker-compose.dev.yml down -v --rmi all --remove-orphans
+
+# # https://github.com/appleboy/scp-action
+# - name: copy docker compose deploy file to remote dev servers
+#   uses: appleboy/scp-action@master
+#   with:
+#     host: dtnaacvdl124.us164.corpintra.net,dtnaacvdl125.us164.corpintra.net
+#     username: jacubic
+#     password: ${{ secrets.DEPLOY_SSH_ACCOUNT_PASSWORD }}
+#     overwrite: true
+#     source: ./docker/docker-compose.dev.deploy.yml
+#     target: ~/
+
+# # https://github.com/appleboy/ssh-action
+# - name: deploying using docker compose file on remote dev servers
+#   uses: appleboy/ssh-action@v0.1.7
+#   with:
+#     host: dtnaacvdl124.us164.corpintra.net,dtnaacvdl125.us164.corpintra.net
+#     username: jacubic
+#     password: ${{ secrets.DEPLOY_SSH_ACCOUNT_PASSWORD }}
+#     script: |
+#       echo ${{ secrets.DEPLOY_SSH_ACCOUNT_PASSWORD }} | sudo -S docker stop $(echo ${{ secrets.DEPLOY_SSH_ACCOUNT_PASSWORD }} | sudo -S docker ps -aq) || true \
+#       && echo ${{ secrets.DEPLOY_SSH_ACCOUNT_PASSWORD }} | sudo -S docker rm -v $(echo ${{ secrets.DEPLOY_SSH_ACCOUNT_PASSWORD }} | sudo -S docker ps -aq) || true \
+#       && echo ${{ secrets.DEPLOY_SSH_ACCOUNT_PASSWORD }} | sudo -S docker rmi $(echo ${{ secrets.DEPLOY_SSH_ACCOUNT_PASSWORD }} | sudo -S docker images -q) || true \
+#       && echo ${{ secrets.DEPLOY_SSH_ACCOUNT_PASSWORD }} | sudo -S rm -f /usr/local/bin/docker-compose.yml \
+#       && touch ~/docker/docker-compose.dev.deploy.yml \
+#       && echo ${{ secrets.DEPLOY_SSH_ACCOUNT_PASSWORD }} | sudo -S mv ~/docker/docker-compose.dev.deploy.yml /usr/local/bin/docker-compose.yml \
+#       && rm -rf ~/docker \
+#       && echo ${{ secrets.DEPLOY_SSH_ACCOUNT_PASSWORD }} | sudo -S chmod 750 /usr/local/bin/docker-compose.yml \
+#       && echo ${{ secrets.DEPLOY_SSH_ACCOUNT_PASSWORD }} | sudo -S chown root /usr/local/bin/docker-compose.yml \
+#       && echo ${{ secrets.DEPLOY_SSH_ACCOUNT_PASSWORD }} | sudo -S docker compose -f /usr/local/bin/docker-compose.yml down --rmi all --volumes --remove-orphans 2>&1 \
+#       && echo ${{ secrets.DEPLOY_SSH_ACCOUNT_PASSWORD }} | sudo -S HOSTNAME=${HOSTNAME} docker compose -f /usr/local/bin/docker-compose.yml up -d --quiet-pull 2>&1
